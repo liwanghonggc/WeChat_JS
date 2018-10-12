@@ -1,0 +1,19 @@
+{
+	"index.html": {
+		"resources": [
+			"chatlist.html"
+		],
+		"refer": [
+			"contact.html",
+			"me.html",
+			"discover.html",
+			"chatlist.html"
+		]
+	},
+	"login.html": {
+		"refer": [
+			"login.html",
+			"index.html"
+		]
+	}
+}

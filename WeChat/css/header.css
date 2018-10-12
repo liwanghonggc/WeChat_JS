@@ -1,0 +1,14 @@
+/*标题栏底色*/
+.title{
+	background-color: #c9394a;
+}
+
+/*标题栏文字颜色*/
+.title-color{
+	color: white;
+}
+
+/*设置底部选项卡的颜色,和标题栏统一*/
+.mui-bar-tab .mui-tab-item.mui-active{
+	color: #c9394a;
+}
