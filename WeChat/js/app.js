@@ -6,9 +6,9 @@ window.app = {
 	serverUrl : 'http://192.168.23.1:8080',
 	
 	/**
-	 * 图片服务器地址
+	 * 图片服务器地址,lwh是group名
 	 */
-	imgServerUrl : "",
+	imgServerUrl : "http://192.168.128.129:88/lwh/",
 	
 	/**
 	 * 判读字符串是否为空
