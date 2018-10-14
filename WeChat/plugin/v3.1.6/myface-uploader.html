@@ -109,6 +109,9 @@
 									var meWebview = plus.webview.getWebviewById("me.html");
 									mui.fire(meWebview, "refresh");
 									
+									var myfaceWebview = plus.webview.getWebviewById("myface.html");
+									mui.fire(myfaceWebview, "refresh");
+									
 									//页面跳转
 									mui.openWindow("index.html", "index.html");
 								} else {

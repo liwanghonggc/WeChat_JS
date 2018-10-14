@@ -18,14 +18,14 @@
 		            	<span class="mui-pull-right mui-icon mui-icon-arrowright" 
 		            		style="line-height: 42px;color: lightgray;margin-left: 3px;"></span>
 		                <img id="img_my_face" class="mui-media-object mui-pull-right" 
-		                	src="css/registLogin/shihao.jpg">
+		                	style="width: 50px;height: 42px;border-radius: 50%" src="css/registLogin/shihao.jpg">
 		                <div class="mui-media-body" style="line-height: 42px;font-size: 16px;">
 		                    	头像
 		                </div>
 		            </a>
 		        </li>
 		        <li class="mui-table-view-cell mui-media">
-		            <a href="javascript:;">
+		            <a id="link_nickname" href="javascript:;">
 		            	<span class="mui-pull-right mui-icon mui-icon-arrowright" 
 		            		style="color: lightgray;margin-left: 3px;"></span>
 		            	<span id="span_nickname" class="mui-pull-right"
@@ -45,7 +45,7 @@
 		            </a>
 		        </li>
 		        <li class="mui-table-view-cell mui-media">
-		            <a href="javascript:;">
+		            <a id="link_my_qrcode" href="javascript:;">
 		            	<span class="mui-pull-right mui-icon mui-icon-arrowright" 
 		            		style="color: lightgray;margin-left: 3px;"></span>
 		                <img class="mui-media-object mui-pull-right" 
@@ -62,7 +62,7 @@
 		    <!--退出登录-->
 		    <ul class="mui-table-view">
 		    	  <li class="mui-table-view-cell mui-media" style="text-align: center;">
-		            <a href="javascript:;">
+		            <a id="link_logout" href="javascript:;">
 		                <div class="mui-media-body">
 		                                    退出登录
 		                </div>
@@ -95,10 +95,34 @@
 					mui.openWindow("myface.html", "myface.html");
 				});
 				
+				//页面跳转,修改昵称
+				var link_nickname = document.getElementById("link_nickname");
+				link_nickname.addEventListener("tap", function(){
+					mui.openWindow("mynickname.html", "mynickname.html");
+				});
+				
 				//添加自定义事件,上传头像完毕之后刷新头像
 				//在上传头像完毕之后会手动触发该refresh事件
 				window.addEventListener("refresh", function(){
 					refreshUserInfo();
+				});
+				
+				//查看二维码
+				var link_my_qrcode = document.getElementById("link_my_qrcode");
+				link_my_qrcode.addEventListener("tap", function(){
+					mui.openWindow({
+						url: "myQRCode.html",
+						id: "myQRCode.html",
+						styles: {}
+					})
+				});
+				
+				//退出
+				var link_logout = document.getElementById("link_logout");
+				link_logout.addEventListener("tap", function(){
+					app.userLogout();
+					
+					mui.openWindow("login.html", "login.html");
 				});
 				
 			});
