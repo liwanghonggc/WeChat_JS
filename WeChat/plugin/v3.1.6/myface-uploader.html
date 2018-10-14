@@ -104,6 +104,11 @@
 								if (data.status == 200) {
 									var userInfo = data.data;
 									app.setUserGlobalInfo(userInfo);
+									
+									//触发另一个webview的自定义事件,可以使用mui.fire()
+									var meWebview = plus.webview.getWebviewById("me.html");
+									mui.fire(meWebview, "refresh");
+									
 									//页面跳转
 									mui.openWindow("index.html", "index.html");
 								} else {

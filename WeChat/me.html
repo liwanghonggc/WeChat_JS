@@ -18,7 +18,7 @@
 		            	<span class="mui-pull-right mui-icon mui-icon-arrowright" 
 		            		style="line-height: 42px;color: lightgray;margin-left: 3px;"></span>
 		                <img id="img_my_face" class="mui-media-object mui-pull-right" 
-		                	style="width: 50px;height: 42px;border-radius: 50%" src="css/registLogin/shihao.jpg">
+		                	src="css/registLogin/shihao.jpg">
 		                <div class="mui-media-body" style="line-height: 42px;font-size: 16px;">
 		                    	头像
 		                </div>
@@ -70,6 +70,11 @@
 		        </li>
 		    </ul>
 		    
+		    <!--<div>
+		    	哈哈
+		    	<img src="http://192.168.128.129:88/lwh/M00/00/00/wKiAgVvCoXGAKtzTAAEuDaqOulM102_80x80.png" />
+		    </div>-->
+		    
 		</div>
 		
 		<script src="js/mui.min.js"></script>
@@ -90,24 +95,35 @@
 					mui.openWindow("myface.html", "myface.html");
 				});
 				
+				//添加自定义事件,上传头像完毕之后刷新头像
+				//在上传头像完毕之后会手动触发该refresh事件
+				window.addEventListener("refresh", function(){
+					refreshUserInfo();
+				});
+				
 			});
 			
 			function refreshUserInfo(){
 				var user = app.getUserGlobalInfo();
-				var faceImage = user.faceImage;
-				var nickName = user.nickname;
-				var username = user.username;
 				
-				var span_nickname = document.getElementById("span_nickname");
-				var span_username = document.getElementById("span_username");
-				
-				span_nickname.innerHTML = nickName;
-				span_username.innerHTML = username;
-				
-				//用户刚注册时并没有头像,需要做一个判断
-				if(app.isNotNull(faceImage)){
-					var img_my_face = document.getElementById("img_my_face");
-					img_my_face.src = app.imgServerUrl + faceImage;
+				if(user != null){
+					var faceImage = user.faceImage;
+					var nickName = user.nickname;
+					var username = user.username;
+					
+					var span_nickname = document.getElementById("span_nickname");
+					var span_username = document.getElementById("span_username");
+					
+					span_nickname.innerHTML = nickName;
+					span_username.innerHTML = username;
+					
+					//用户刚注册时并没有头像,需要做一个判断
+					if(app.isNotNull(faceImage)){
+						var img_my_face = document.getElementById("img_my_face");
+						img_my_face.src = app.imgServerUrl + faceImage;
+						
+						console.log(img_my_face.src);
+					}
 				}
 			}
 		</script>
