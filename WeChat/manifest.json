@@ -163,6 +163,13 @@
 					"plugin/v3.1.6/myface-uploader.html"
 				],
 				"priority": 0
+			},
+			"discover.html": {
+				"resources": [],
+				"refer": [
+					"searchfriends.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {
