@@ -44,33 +44,21 @@
 			mui.plusReady(function(){
 				var user = app.getUserGlobalInfo();
 				
-				var txt_nickname = document.getElementById("txt_nickname");
-				txt_nickname.value = mynickname;
+				var txt_your_friendname = document.getElementById("txt_your_friendname");
 				
-				//提交事件,修改昵称
-				var link_submit_nickname = document.getElementById("link_submit_nickname");
-				link_submit_nickname.addEventListener("tap", function(){
-					var newNickName = txt_nickname.value;
+				
+				//提交事件,搜索朋友
+				var link_submit_search = document.getElementById("link_submit_search");
+				link_submit_search.addEventListener("tap", function(){
+					var yourFriendUsername = txt_your_friendname.value;
 					
-					if(newNickName.length < 1){
-						app.showToast("昵称长度太短", "error");
-						return false;
-					}
-					
-					if(newNickName.length > 8){
-						app.showToast("昵称长度不能超过8位", "error");
-						return false;
-					}
+					alert(yourFriendUsername);
 					
 					plus.nativeUI.showWaiting("请稍候...");
 					
-					mui.ajax(app.serverUrl + "/u/setNickname",{
-							//传给服务器的数据
-							data:{
-								userId:user.id,
-								nickname:newNickName
-							},
-							
+					mui.ajax(app.serverUrl + "/u/search?userId = " + user.id + "&friendUsername = " + yourFriendUsername, {
+
+                            data:{},
 							dataType:'json',//服务器返回json格式数据
 							type:'post',//HTTP请求类型
 							timeout:10000,//超时时间设置为10秒；
