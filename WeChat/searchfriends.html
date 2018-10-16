@@ -64,19 +64,17 @@
 							headers:{'Content-Type':'application/json'},
 							
 							success:function(data){
-								
 								plus.nativeUI.closeWaiting();
 								
 								if(data.status == 200){
-									//登录或者成功之后,保存全局用户对象
-									var userInfoJson = data.data;
-									app.setUserGlobalInfo(userInfoJson);
-									
-									var meWebview = plus.webview.getWebviewById("me.html");
-									mui.fire(meWebview, "refresh");
-									
-									//页面跳转
-									mui.back();
+									mui.openWindow({
+										url : "searchFriendsResult.html",
+										id : "searchFriendsResult.html",
+										styles : {},
+										extras : {
+											willBeFriend : data.data
+										}
+									});
 								}else{
 									app.showToast(data.msg, "error");
 								}
