@@ -12,21 +12,7 @@
 
 		<div class="mui-content">
 			<ul class="mui-table-view" id="ul_friend_request_list" style="margin-bottom: 10px;">
-				<li class="mui-table-view-cell mui-media">
-					<a href="javascript:;">
-						<img class="mui-media-object mui-pull-left" src="image/face-default-cat.png">
-						<span id="span_nickname" class="mui-pull-right" style="margin-top: 8px;">
-		                	<button friendId="1001" type="button" class="ignoreRequest mui-btn mui-btn-grey"
-		                		style="padding: 4px;margin-right: 5px;">忽略</button>
-		                		
-		                	<button friendId="1001" type="button" class="ignoreRequest mui-btn mui-btn-danger"
-		                		style="padding: 4px;margin-right: 5px;">通过</button>
-		                </span>
-						<div class="mui-media-body" style="margin-top: 2px;">
-							<label>某某某</label>
-							<p class="mui-ellipsis">请求添加你为朋友</p>
-						</div>
-				</li>
+				
 			</ul>
 		</div>
 
@@ -40,15 +26,15 @@
 
 				//加载好友请求记录
 				var thisWebview = plus.webview.currentWebview();
+				
 				thisWebview.addEventListener("show", function() {
 					loadingFriendRequests();
 				});
 			});
 
+            //加载好友请求记录列表
 			function loadingFriendRequests() {
 				var user = app.getUserGlobalInfo();
-				
-				alert(user.id);
 				
 				mui.ajax(app.serverUrl + "/u/queryFriendRequest", {
 					data: {
@@ -56,7 +42,7 @@
 					},
 					dataType: 'json', //服务器返回json格式数据
 					type: 'post', //HTTP请求类型
-					timeout: 10000, //超时时间设置为10秒；
+					timeout: 10000, //超时时间设置为10秒
 					headers: {
 						'Content-Type': 'application/json'
 					},
@@ -64,6 +50,7 @@
 						console.log(JSON.stringify(data.data));
 						
 						if(data.status == 200) {
+							var friendRequestList = data.data;
 							
 						} else {
 							app.showToast(data.msg, "error");
@@ -75,6 +62,26 @@
 						alert(errorThrown);
 					}
 				});
+			}
+			
+			//循环显示添加好友请求
+			function renderFriendRequests(friend){
+				var html = "";
+				
+				html = '<li class="mui-table-view-cell mui-media">' +
+							'<a href="javascript:;">' +
+								'<img class="mui-media-object mui-pull-left" src="'+ app.imgServerUrl + friend.sendFaceImage +'">' +
+								'<span id="span_nickname" class="mui-pull-right" style="margin-top: 8px;">' +
+				                	'<button friendId="'+ friend.sendUserId +'" type="button" class="ignoreRequest mui-btn mui-btn-grey" style="padding: 4px;margin-right: 5px;">忽略</button>' +	
+				                	'<button friendId="'+ friend.sendUserId +'" type="button" class="ignoreRequest mui-btn mui-btn-danger" style="padding: 4px;margin-right: 5px;">通过</button>' +
+				                '</span>' +
+								'<div class="mui-media-body" style="margin-top: 2px;">' +
+									'<label>'+ friend.sendUsername +'</label>' +
+									'<p class="mui-ellipsis">请求添加你为朋友</p>' +
+								'</div>' +
+							'</a>' +
+					   '</li>';
+				return html;
 			}
 		</script>
 	</body>
