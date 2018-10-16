@@ -170,6 +170,13 @@
 					"searchfriends.html"
 				],
 				"priority": 0
+			},
+			"searchfriends.html": {
+				"resources": [],
+				"refer": [
+					"searchFriendsResult.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {

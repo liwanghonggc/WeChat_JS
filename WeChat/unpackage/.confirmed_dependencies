@@ -33,5 +33,10 @@
 		"refer": [
 			"searchfriends.html"
 		]
+	},
+	"searchfriends.html": {
+		"refer": [
+			"searchFriendsResult.html"
+		]
 	}
 }
