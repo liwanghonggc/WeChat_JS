@@ -51,14 +51,13 @@
 				var link_submit_search = document.getElementById("link_submit_search");
 				link_submit_search.addEventListener("tap", function(){
 					var yourFriendUsername = txt_your_friendname.value;
-					
-					alert(yourFriendUsername);
-					
 					plus.nativeUI.showWaiting("请稍候...");
 					
-					mui.ajax(app.serverUrl + "/u/search?userId = " + user.id + "&friendUsername = " + yourFriendUsername, {
-
-                            data:{},
+					mui.ajax(app.serverUrl + "/u/search", {
+                            data:{
+                            	userId:user.id,
+								friendUsername:yourFriendUsername
+                            },
 							dataType:'json',//服务器返回json格式数据
 							type:'post',//HTTP请求类型
 							timeout:10000,//超时时间设置为10秒；
