@@ -47,19 +47,59 @@
 						'Content-Type': 'application/json'
 					},
 					success: function(data) {
-						console.log(JSON.stringify(data.data));
+						//console.log(JSON.stringify(data.data));
 						
 						if(data.status == 200) {
 							var friendRequestList = data.data;
 							
-						} else {
-							app.showToast(data.msg, "error");
-						}
+							var ul_friend_request_list = document.getElementById("ul_friend_request_list");
+							if(friendRequestList != null && friendRequestList.length > 0){
+								var requestHtml = "";
+								for(var i = 0; i < friendRequestList.length; i++){
+									requestHtml += renderFriendRequests(friendRequestList[i]);
+								}
+								ul_friend_request_list.innerHTML = requestHtml;
+								
+								//动态对忽略和通过按钮进行事件绑定
+								mui(".btnOper").on("tap", ".ignoreRequest", function(e){
+									var friendId = this.getAttribute("friendId");
+									operatorFriendRequest(user.id, friendId, 0);
+								});
+								
+								mui(".btnOper").on("tap", ".passRequest", function(e){
+									var friendId = this.getAttribute("friendId");
+									operatorFriendRequest(user.id, friendId, 1);
+								});
+								
+							}else{
+								ul_friend_request_list.innerHTML = "";
+							}
+						} 
+					}
+				});
+			}
+			
+			//接收或者忽略好友请求
+			function operatorFriendRequest(userId, friendId, operType){
+				mui.ajax(app.serverUrl + "/u/operatorFriendRequest", {
+					data: {
+						acceptUserId : userId,
+						sendUserId : friendId,
+						operType : operType
 					},
-					error: function(xhr, type, errorThrown) {
-						//异常处理
-						alert(type);
-						alert(errorThrown);
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						if(data.status == 200) {
+							//TODO, 通讯录
+							
+							//重新加载好友请求记录
+							loadingFriendRequests();
+						} 
 					}
 				});
 			}
@@ -68,12 +108,12 @@
 			function renderFriendRequests(friend){
 				var html = "";
 				
-				html = '<li class="mui-table-view-cell mui-media">' +
+				html = '<li class="btnOper mui-table-view-cell mui-media">' +
 							'<a href="javascript:;">' +
 								'<img class="mui-media-object mui-pull-left" src="'+ app.imgServerUrl + friend.sendFaceImage +'">' +
 								'<span id="span_nickname" class="mui-pull-right" style="margin-top: 8px;">' +
 				                	'<button friendId="'+ friend.sendUserId +'" type="button" class="ignoreRequest mui-btn mui-btn-grey" style="padding: 4px;margin-right: 5px;">忽略</button>' +	
-				                	'<button friendId="'+ friend.sendUserId +'" type="button" class="ignoreRequest mui-btn mui-btn-danger" style="padding: 4px;margin-right: 5px;">通过</button>' +
+				                	'<button friendId="'+ friend.sendUserId +'" type="button" class="passRequest mui-btn mui-btn-danger" style="padding: 4px;margin-right: 5px;">通过</button>' +
 				                '</span>' +
 								'<div class="mui-media-body" style="margin-top: 2px;">' +
 									'<label>'+ friend.sendUsername +'</label>' +
