@@ -44,5 +44,10 @@
 		"refer": [
 			"searchFriendsResult.html"
 		]
+	},
+	"contact.html": {
+		"refer": [
+			"chatting.html"
+		]
 	}
 }
