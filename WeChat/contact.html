@@ -28,7 +28,7 @@
 		<div class="mui-content">
 			<div id='list' class="mui-indexed-list">
 				<div class="mui-indexed-list-search mui-input-row mui-search">
-					<input type="search" class="mui-input-clear mui-indexed-list-search-input" placeholder="搜索机场">
+					<input type="search" class="mui-input-clear mui-indexed-list-search-input" placeholder="搜索好友">
 				</div>
 				<div class="mui-indexed-list-bar">
 					<a>A</a>
@@ -61,46 +61,151 @@
 				<div class="mui-indexed-list-alert"></div>
 				<div class="mui-indexed-list-inner">
 					<div class="mui-indexed-list-empty-alert">没有数据</div>
-					<ul class="mui-table-view">
-						<li data-group="A" class="mui-table-view-divider mui-indexed-list-group">A</li>
-						<!--加上mui-media,表示这是图文列表-->
+					<ul id="contactList" class="mui-table-view">
+						<!--<li data-group="A" class="mui-table-view-divider mui-indexed-list-group">A</li>
 						<li class="mui-media mui-indexed-list-item" style="padding: 8px 10px;">
 							<img class="mui-media-object mui-pull-left" style="max-width: 35px;height: 35px;" src="css/registLogin/arrow.jpg" />
 							<div class="mui-media-body" style="line-height: 35px;">一念花开</div>
-						</li>
-						
-						<li data-group="B" class="mui-table-view-divider mui-indexed-list-group">B</li>
-						<li data-value="BSD" data-tags="BaoShan" class="mui-table-view-cell mui-indexed-list-item">保山机场</li>
-						<li data-value="BAV" data-tags="BaoTou" class="mui-table-view-cell mui-indexed-list-item">包头机场</li>
+						</li>-->
 					</ul>
 				</div>
 			</div>
 		</div>
-		
+
 		<script src="js/mui.min.js"></script>
 		<script src="js/mui.indexedlist.js"></script>
 		<script src="js/app.js"></script>
+		<!--引入汉字转拼音的插件-->
+		<script src="js/nickname.js"></script>
 		<script type="text/javascript">
 			mui.init();
-			
-			mui.plusReady(function(){
-				var thisWebView = plus.webview.currentWebview();
+
+			mui.plusReady(function() {
+				//获取通讯录联系人列表并缓存
+				fetchContactList();
 				
+				var thisWebView = plus.webview.currentWebview();
 				//监听show事件
-				thisWebView.addEventListener("show", function(){
+				thisWebView.addEventListener("show", function() {
+					//从缓存中获取联系人列表,并渲染到页面
+					renderContactPage();
+					
+					//显示通讯录
 					showList();
 				});
 			});
 			
-			//显示通讯录
-			function showList(){
+			//26个字母外加#号键
+			var enWords = [
+				'A', 'B', 'C', 'D', 'E', 'F', 'G', 
+				'H', 'I', 'J', 'K', 'L', 'M', 'N',
+				'O', 'P', 'Q', 'R', 'S', 'T', 
+				'U', 'V', 'W', 'X', 'Y', 'Z',
+				'#'
+			]
+			
+			// 构建通讯录二维数组模型
+			var contactArray = [
+				[],[],[],[],[],[],[],[],[],
+				[],[],[],[],[],[],[],[],[],
+				[],[],[],[],[],[],[],[],[]
+			]
+			
+			//清空通讯录数组模型
+			function clearContactArray(){
+				contactArray = [
+						[],[],[],[],[],[],[],[],[],
+						[],[],[],[],[],[],[],[],[],
+						[],[],[],[],[],[],[],[],[]
+				]
+			}
+			
+			//获取指定字母在二维数组中的位置
+			function getOrderOfWords(enChar){
+				for(var i = 0; i < enWords.length; i++){
+					if(enWords[i] == enChar){
+						return i;
+					}
+				}
+				//若没有匹配到,返回#号键
+				return enWords.length - 1;
+			}
+			
+			//从缓存中获取联系人列表,并渲染到页面
+			function renderContactPage(){
+				//1.获取联系人列表
+				var friendList = app.getContactList();
+				
+				//2.循环好友列表,转换为拼音
+				for(var i = 0; i < friendList.length; i++){
+					var friend = friendList[i];
+					//2.1 获取拼音
+					var pingyin = words.convertPinyin(friend.friendNickname);
+					//2.2 截取拼音的首字母
+					var firstChar = pingyin.substr(0, 1).toUpperCase();
+					//2.3 获取指定字母在二维数组中的位置
+					var order = getOrderOfWords(firstChar);
+					//2.4 获得顺序之后,塞入朋友
+					contactArray[order].push(friend);
+					
+				}
+				
+				//3.构建通讯录HTML进行渲染
+				var contactHtml = '';
+				for(var i = 0; i < contactArray.length; i++){
+					var friendArray = contactArray[i];
+					if(friendArray.length > 0){
+						var nicknameStarter = enWords[i];
+						contactHtml += '<li data-group="'+nicknameStarter+'" class="mui-table-view-divider mui-indexed-list-group">'+ nicknameStarter +'</li>';
+						for(var j = 0; j < friendArray.length; j++){
+							contactHtml += '' + 
+								'<li friendUserId="'+ friendArray[j].friendUserId +'" friendNickname="'+ friendArray[j].friendNickname +'" friendFaceImage="'+ friendArray[j].friendFaceImage +'" class="mui-media mui-indexed-list-item" style="padding: 8px 10px;">'+
+								    '<img class="mui-media-object mui-pull-left" style="max-width: 35px;height: 35px;" src="'+ app.imgServerUrl + friendArray[j].friendFaceImage +'" />'+
+									'<div class="mui-media-body" style="line-height: 35px;">'+ friendArray[j].friendNickname +'</div>'+
+								'</li>';
+						}
+					}
+				}
+				
+				//渲染HTML
+				document.getElementById("contactList").innerHTML = contactHtml;
+				
+				//清空数组
+				clearContactArray();
+			}
+			
+			//查询通讯录好友
+			function fetchContactList() {
+				//接收或者忽略好友请求
+				var user = app.getUserGlobalInfo();
+				mui.ajax(app.serverUrl + "/u/myFriends", {
+					data: {
+						userId : user.id
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						if(data.status == 200) {
+							var contactList = data.data;
+							//缓存联系人列表
+							app.setContactList(contactList);
+						}
+					}
+				});
+			}
+
+			//显示通讯录好友
+			function showList() {
 				var list = document.getElementById('list');
 				//设置高度
 				list.style.height = document.body.offsetHeight + "px";
 				//创建列表显示
 				window.indexedList = new mui.IndexedList(list);
 			}
-			
 		</script>
 	</body>
 
