@@ -167,7 +167,8 @@
 			"discover.html": {
 				"resources": [],
 				"refer": [
-					"searchfriends.html"
+					"searchfriends.html",
+					"scanme.html"
 				],
 				"priority": 0
 			},

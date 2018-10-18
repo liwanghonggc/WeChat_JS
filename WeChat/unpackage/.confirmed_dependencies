@@ -31,7 +31,8 @@
 	},
 	"discover.html": {
 		"refer": [
-			"searchfriends.html"
+			"searchfriends.html",
+			"scanme.html"
 		]
 	},
 	"searchfriends.html": {

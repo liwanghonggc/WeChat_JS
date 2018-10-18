@@ -54,8 +54,6 @@
 			mui.init();
 
 			mui.plusReady(function() {
-				var meInfo = app.getUserGlobalInfo();
-
 				//获取上一个页面传入的对象
 				var currentWebView = plus.webview.currentWebview();
 				var yourFriend = currentWebView.willBeFriend;
@@ -76,6 +74,7 @@
 				btn_add_friend.addEventListener("tap", function() {
 					plus.nativeUI.showWaiting("请稍候...");
 
+                    var meInfo = app.getUserGlobalInfo();
 					mui.ajax(app.serverUrl + "/u/addFriendRequest", {
 						data: {
 							userId: meInfo.id,
