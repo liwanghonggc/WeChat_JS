@@ -178,6 +178,13 @@
 					"searchFriendsResult.html"
 				],
 				"priority": 0
+			},
+			"scanme.html": {
+				"resources": [],
+				"refer": [
+					"searchFriendsResult.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {

@@ -39,5 +39,10 @@
 		"refer": [
 			"searchFriendsResult.html"
 		]
+	},
+	"scanme.html": {
+		"refer": [
+			"searchFriendsResult.html"
+		]
 	}
 }

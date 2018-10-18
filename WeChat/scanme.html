@@ -27,7 +27,8 @@
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left title-color"></a>
 			<h1 class="mui-title title-color"><b id="chatting-nickname">扫一扫</b></h1>
 		</header>
-
+		
+		<!--定义一个div,作为扫描的范围-->
 		<div id="scanComponent"></div>
 
 		<script type="application/javascript" src="js/app.js"></script>
@@ -47,23 +48,62 @@
 					frameColor: "#128E12",
 					scanbarColor: "#0062CC",
 					background: ""
-				}
+				};
+				
 				scan = new plus.barcode.Barcode('scanComponent', null, styles);
 				scan.onmarked = onmarked;
 				scan.start();
 			}
-			
+
 			//根据扫描出的结果进行添加好友处理
 			function onmarked(type, result) {
 				//表示是QRCode
-				if(type === 0){
+				if(type === 0) {
 					var content = result.split("wechat_qrcode:");
-					if(content.length != 2){
+					if(content.length != 2) {
 						mui.alert("result");
-					}else{
+					} else {
 						var friendUsername = content[1];
+						var user = app.getUserGlobalInfo();
+						
+						mui.ajax(app.serverUrl + "/u/search", {
+							data: {
+								userId: user.id,
+								friendUsername: friendUsername
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒
+							headers: {
+								'Content-Type': 'application/json'
+							},
+
+							success: function(data) {
+								plus.nativeUI.closeWaiting();
+
+								if(data.status == 200) {
+									mui.openWindow({
+										url: "searchFriendsResult.html",
+										id: "searchFriendsResult.html",
+										styles: {},
+										//extras可以传参,这里将参数传到下一个页面
+										extras: {
+											willBeFriend: data.data
+										}
+									});
+								} else {
+									app.showToast(data.msg, "error");
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								alert(type);
+								alert(errorThrown);
+							}
+						});
 					}
 				}
+				//一定要重新启动下
+				scan.start();
 			}
 		</script>
 	</body>
