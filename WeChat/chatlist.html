@@ -32,10 +32,67 @@
 				});
 				
 				//自定义事件,刷新好友请求记录,在index.html的initData方法中触发该事件
+				//初始化WebSocket
 				window.addEventListener("refresh", function(){
 					loadingFriendRequests();
+					CHAT.init();
 				});
+				
+				CHAT.init();
 			});
+			
+			//构建聊天业务CHAT
+			window.CHAT = {
+				socket: null,
+				init: function(){
+					//判断是否支持WebSocket
+					if(window.WebSocket){
+						
+						//如果当前状态已经连接,不需要重复初始化WebSocket
+						if(CHAT.socket != null && CHAT.socket != undefined && CHAT.socket.readyState == WebSocket.OPEN){
+							return false;
+						}
+						
+						CHAT.socket = new WebSocket(app.nettyServerUrl);
+						
+						CHAT.socket.onopen = CHAT.wsopen,
+						
+						CHAT.socket.onclose = CHAT.wsclose,
+						
+						CHAT.socket.onerror = CHAT.wserror,
+						
+						CHAT.socket.onmessage = CHAT.wsmessage;
+					}else{
+						alert("手机设备过旧!");
+					}
+				},
+				
+				chat: function(msg){
+					CHAT.socket.send(msg);
+				},
+				
+				wsopen : function(){
+					console.log("websocket连接建立成功!");
+				},
+				
+				wsclose : function(){
+					console.log("websocket连接关闭!");
+				},
+				
+				wserror : function(){
+					console.log("websocket发生错误!");
+				},
+				
+				wsmessage : function(e){
+					console.log("websocket接收到消息: " + e.data);
+					
+					//调用聊天webview的receiveMsg方法
+					//TODO,friendUserId暂时写死
+					var chatWebView = plus.webview.getWebviewById("chatting-181018FG06Y7G8PH");
+					//使用这种方式调用跨WebView跨页面的JS代码
+					chatWebView.evalJS("receiveMsg('"+ e.data +"')");
+				}
+			}
 
             //加载好友请求记录列表
 			function loadingFriendRequests() {

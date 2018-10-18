@@ -359,8 +359,13 @@
 						//发送消息完毕之后把发送按钮改为灰白色
 						send.setAttribute("class", "mui-btn-gray");
 						
+						//调用webSocket发送消息到Netty后端
+						var wsWebView = plus.webview.getWebviewById("chatlist.html");
+						//使用这种方式调用跨WebView跨页面的JS代码
+						wsWebView.evalJS("CHAT.chat('" + messageVal + "')");
+						
 						//模拟接收消息
-						receiveMsg("模拟接收消息");
+						//receiveMsg("模拟接收消息");
 
 					});
 				});
