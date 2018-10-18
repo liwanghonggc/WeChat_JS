@@ -30,6 +30,11 @@
 				thisWebview.addEventListener("show", function() {
 					loadingFriendRequests();
 				});
+				
+				//自定义事件,刷新好友请求记录,在index.html的initData方法中触发该事件
+				window.addEventListener("refresh", function(){
+					loadingFriendRequests();
+				});
 			});
 
             //加载好友请求记录列表

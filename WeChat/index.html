@@ -120,7 +120,18 @@
 					}
 				}
 			})
+			
+			setTimeout("initData()", "1000");
 		});
+		
+		//触发自定义事件
+		function initData(){
+			var chatlist = plus.webview.getWebviewById("chatlist.html");
+			mui.fire(chatlist, "refresh");
+			
+			var me = plus.webview.getWebviewById("me.html");
+			mui.fire(me, "refresh");
+		}
 	</script>
 	
 </body>
