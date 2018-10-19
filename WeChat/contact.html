@@ -133,6 +133,8 @@
 			
 			//从缓存中获取联系人列表,并渲染到页面
 			function renderContactPage(){
+				fetchContactList();
+				
 				//1.获取联系人列表
 				var friendList = app.getContactList();
 				
