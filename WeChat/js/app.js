@@ -197,6 +197,16 @@ window.app = {
 	},
 	
 	/**
+	 * 删除聊天记录
+	 * @param {Object} myId
+	 * @param {Object} friendId
+	 */
+	deleteUserChatHistory : function(myId, friendId){
+		var chatKey = "chat-" + myId + "-" + friendId;
+		plus.storage.removeItem(chatKey);
+	},
+	
+	/**
 	 * 保存聊天记录快照,仅仅保存每次和朋友聊天的最后一条消息
 	 * @param {Object} myId
 	 * @param {Object} friendId
@@ -258,6 +268,38 @@ window.app = {
 	},
 	
 	/**
+	 * 删除本地聊天快照记录
+	 * @param {Object} myId
+	 * @param {Object} friendId
+	 */
+	deleteUserChatSnapshot : function(myId, friendId){
+		var me = this;
+		var chatKey = "chatsnapshot-" + myId;
+		
+		//从本地缓存获取聊天快照list是否存在
+		var chatSnapshotListStr = plus.storage.getItem(chatKey);
+		var chatSnapshotList;
+		
+		if(me.isNotNull(chatSnapshotListStr)){
+			chatSnapshotList = JSON.parse(chatSnapshotListStr);
+			
+			//循环快照list,并且判断每个元素是否包含匹配的friendId,如果匹配删除
+			for(var i = 0; i < chatSnapshotList.length; i++){
+				var charSnapshot = chatSnapshotList[i];
+				if(charSnapshot.friendId == friendId){
+					//删除已经存在的friendId对应的快照元素
+					chatSnapshotList.splice(i, 1);
+					break;
+				}
+			}
+		}else{
+			return;
+		}
+		
+		plus.storage.setItem(chatKey, JSON.stringify(chatSnapshotList));
+	},
+	
+	/**
 	 * 根据用户ID从本地联系人列表中获取信息
 	 * @param {Object} friendId
 	 */
@@ -274,5 +316,38 @@ window.app = {
 		}else{
 			return null;
 		}
+	},
+	
+	/**
+	 * 标记未读消息为已读状态
+	 * @param {Object} myId
+	 * @param {Object} friendId
+	 */
+	readUserChatSnapshot : function(myId, friendId){
+		var me = this;
+		var chatKey = "chatsnapshot-" + myId;
+		
+		//从本地缓存获取聊天记录是否存在
+		var chatSnapshotListStr = plus.storage.getItem(chatKey);
+		var chatSnapshotList;
+		
+		if(me.isNotNull(chatSnapshotListStr)){
+			chatSnapshotList = JSON.parse(chatSnapshotListStr);
+			//循环list,判断是否存在好友,比对friendId,如果有删除它,并放入一个标记已读的快照对象
+			for(var i = 0; i < chatSnapshotList.length; i++){
+				var item = chatSnapshotList[i];
+				if(item.friendId == friendId){
+					item.isRead = true;
+					//替换原有的快照
+					chatSnapshotList.splice(i, 1, item);
+					
+					break;
+				}
+			}
+			plus.storage.setItem(chatKey, JSON.stringify(chatSnapshotList));
+		}else{
+			return;
+		}
+		
 	}
 }
