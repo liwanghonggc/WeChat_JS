@@ -79,5 +79,40 @@ window.app = {
 		}
 		
 		return JSON.parse(contactListStr);
+	},
+	
+	/**
+	 * 和后端的枚举对应
+	 */
+	CONNECT : 1, // "第一次(或重连)初始化连接"
+	CHAT : 2,  //"聊天消息"	
+	SIGNED : 3, //"消息签收"
+	KEEPALIVE : 4, //"客户端保持心跳"
+	PULL_FRIEND : 5, //"拉取好友"
+	
+	/**
+	 * 和后端的ChatMsg聊天模型对象保持一致
+	 * @param {Object} senderId
+	 * @param {Object} receiveId
+	 * @param {Object} msg
+	 * @param {Object} msgId
+	 */
+	ChatMsg : function(senderId, receiveId, msg, msgId){
+		this.senderId = senderId;
+		this.receiveId = receiveId;
+		this.msg = msg;
+		this.msgId = msgId;
+	},
+	
+	/**
+	 * 构建消息模型对象
+	 * @param {Object} action
+	 * @param {Object} chatMsg
+	 * @param {Object} extend
+	 */
+	DataContent : function(action, chatMsg, extend){
+		this.action = action;
+		this.chatMsg = chatMsg;
+		this.extend = extend;
 	}
 }
