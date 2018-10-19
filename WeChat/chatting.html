@@ -31,7 +31,7 @@
 		<div id="msg-outter" class="mui-content">
 			<div id='msg'>
 
-				<div class="friend_lists">
+				<!--<div class="friend_lists">
 					<div class="header_img">
 						<img src="image/face-default-cat.png" width="40px" height="40px" />
 					</div>
@@ -47,7 +47,7 @@
 					<div class="msg-wrapper left">
 						<p class="msg-right-green">好的，没问题！时间地点？</p>
 					</div>
-				</div>
+				</div>-->
 
 				
 			</div>
@@ -90,6 +90,9 @@
 
 				//修改头部为朋友昵称
 				document.getElementById("chatting-nickname").innerHTML = friendNickname;
+				
+				//渲染初始化的消息聊天记录
+				initChatHistory();
 
 				//设置进入聊天记录界面时自动滚动到最后一条
 				resizeScreen();
@@ -146,6 +149,11 @@
 					//使用这种方式调用跨WebView跨页面的JS代码
 					//wsWebView.evalJS("CHAT.chat('" + messageVal + "')");
 					wsWebView.evalJS("CHAT.chat('" + JSON.stringify(dataContent) + "')");
+					
+					//保存聊天历史记录到本地
+					app.saveUserChatHistory(me.id, friendUserId, messageVal, 1);
+					//保存消息快照记录
+					app.saveUserChatSnapshot(me.id, friendUserId, messageVal, true);
 
 					//模拟接收消息
 					//receiveMsg("模拟接收消息");
@@ -195,7 +203,7 @@
 
 			//播放接收消息的铃声
 			function playReceiveMsgSound() {
-				var audioPlayer = plus.audio.createPlayer("/mp3/di_didi.mp3");
+				var audioPlayer = plus.audio.createPlayer("/mp3/send.mp3");
 				audioPlayer.play();
 			}
 
@@ -207,6 +215,42 @@
 			}
 
 			//			}(mui, document));
+			
+			//初始化用户的聊天记录
+			function initChatHistory(){
+				var msg_list = document.getElementById("msg");
+				var me = app.getUserGlobalInfo();
+				var myId = me.id;
+				var myFaceImg = me.faceImage;
+				var chatHistoryList = app.getUserChatHistory(myId, friendUserId);
+				
+				var togotherHTML = "";
+				
+				for(var i = 0; i < chatHistoryList.length; i++){
+					var singleMsg = chatHistoryList[i];
+					if(singleMsg.flag == 1){
+						togotherHTML += '<div class="me_lists">' +
+											'<div class="header_img"> ' +
+												'<img src="' + app.imgServerUrl + myFaceImg + '" width="40px" height="40px" /> ' +
+											'</div> ' +
+											'<div class="msg-wrapper left"> ' +
+												'<p class="msg-right-green">' + singleMsg.msg + '</p> ' +
+											'</div>' +
+										'</div>';
+					}else{
+						togotherHTML += '<div class="friend_lists">' +
+											'<div class="header_img">' +
+												'<img src="' + app.imgServerUrl + friendFaceImage + '" width="40px" height="40px" />' +
+											'</div>' +
+											'<div class="msg-wrapper right">' +
+												'<p class="msg-left-white">' + singleMsg.msg + '</p>' +
+											'</div>' +
+										'</div>';
+					}
+				}
+				
+				msg_list.innerHTML = togotherHTML;
+			}
 		</script>
 	</body>
 
