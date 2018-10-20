@@ -13,7 +13,8 @@ window.app = {
 	/**
 	 * 图片服务器地址,lwh是group名
 	 */
-	imgServerUrl : "http://192.168.128.129:88/lwh/",
+//	imgServerUrl : "http://192.168.128.129:88/lwh/",
+	imgServerUrl : "http://47.101.208.194:88/lwh/",
 	
 	/**
 	 * 判读字符串是否为空
