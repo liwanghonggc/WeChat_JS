@@ -10,7 +10,7 @@ window.app = {
 	 * 后端服务发布的URL地址,这边要用本机真实IP地址
 	 */
 //	serverUrl : 'http://192.168.23.1:8080',
-	serverUrl : 'http://47.101.208.194:8080',
+	serverUrl : 'http://47.101.208.194/WeChat',
 	
 	/**
 	 * 图片服务器地址,lwh是group名
